@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%-16(%d{MM-dd HH:mm:ss.SSS}) %-5thread %-5level %logger{1} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="default" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${catalina.home}/logs/embed-jetty.%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>
+                %-16(%d{MM-dd HH:mm:ss.SSS}) %-5thread %-5level %logger{1} - %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.github" level="DEBUG" />
+    <logger name="org.apache" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.eclipse" level="INFO"/>
+
+    <root>
+        <level value="DEBUG" />
+        <appender-ref ref="stdout" />
+    </root>
+</configuration>
