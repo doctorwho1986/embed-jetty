@@ -192,5 +192,57 @@ public class EmbedJettyTest {
 		Assert.assertEquals(org.eclipse.jetty.http.HttpStatus.OK_200, response.getResponseCode());
 		jetty.stop();
 	}
+	
+	
+	
+	@Test
+	public void testOneHostOneWebAapp() throws IOException, SAXException{
+		EmbedJetty jetty = new EmbedJetty(8080,"localhost",contextPath, webAppRelativePath,null);
+		jetty.addFilter(contextPath, "/f", new Filter() {
+			
+			public void init(FilterConfig filterConfig) throws ServletException {
+				logger.info("{msg:'{} filter init'}",contextPath);
+			}
+			
+			public void doFilter(ServletRequest request, ServletResponse response,
+					FilterChain chain) throws IOException, ServletException {
+				logger.info("{msg:'{} filter doFilter'}",contextPath);
+				
+			}
+			
+			public void destroy() {
+				logger.info("{msg:'{} filter destroy' }",contextPath);
+			}
+		}, DispatcherType.REQUEST);
+		
+		jetty.addWebAppContext(contextPath2, webAppRelativePath2,"www.aicai.com");
+		jetty.addFilter(contextPath2, "/f2", new Filter() {
+			
+			public void init(FilterConfig filterConfig) throws ServletException {
+				logger.info("{msg:'{} filter init'}",contextPath2);
+				
+			}
+			
+			public void doFilter(ServletRequest request, ServletResponse response,
+					FilterChain chain) throws IOException, ServletException {
+				logger.info("{msg:'{} filter doFilter'}",contextPath2);
+				
+			}
+			
+			public void destroy() {
+				// TODO Auto-generated method stub
+				logger.info("{msg:'{} filter destroy' }",contextPath2);
+			}
+		}, DispatcherType.REQUEST);
+		
+		jetty.start();
+		WebConversation webConversation = new WebConversation();
+		WebResponse response = webConversation.getResponse("http://localhost:8080/jetty/f");
+		Assert.assertEquals(org.eclipse.jetty.http.HttpStatus.OK_200, response.getResponseCode());
+		
+		webConversation.getResponse("http://www.aicai.com:8080/jetty2/f2");
+		Assert.assertEquals(org.eclipse.jetty.http.HttpStatus.OK_200, response.getResponseCode());
+		jetty.stop();
+	}
 
 }
