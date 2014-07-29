@@ -98,7 +98,7 @@ public class EmbedJetty {
 		}
 	}
 	
-	public void jion() {
+	public void join() {
 		try {
 			server.join();
 		} catch (InterruptedException e) {
