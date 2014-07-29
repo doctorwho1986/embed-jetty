@@ -40,25 +40,17 @@ public class EmbedJetty {
 		}
         
         addWebAppContext(contextPath, webAppRelativePath);
-//        WebAppContext webapp = new WebAppContext(projectDir + webAppRelativePath, contextPath);
-//        contexts.put(contextPath, webapp);
-//       
-//        int sum = contexts.size();
-//        Handler[] handlers = new WebAppContext[sum];
-//        Collection<WebAppContext> values = contexts.values();
-//        int i = 0;
-//        for (WebAppContext webAppContext : values) {
-//			handlers[i++] = webAppContext;
-//		}
-//        
-//        ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
-//        contextHandlerCollection.setHandlers(handlers );
-//		server.setHandler(contextHandlerCollection);
 	}
 	
-	public void addWebAppContext(String contextPath,String webAppRelativePath) {
+	public void addWebAppContext(String contextPath,String webAppRelativePath){
+		addWebAppContext(contextPath, webAppRelativePath,new String[]{});
+	}
+	public void addWebAppContext(String contextPath,String webAppRelativePath,String... hostNames) {
 		 
         WebAppContext webapp = new WebAppContext(projectDir + webAppRelativePath, contextPath);
+        if (0 != hostNames.length) {
+			webapp.setVirtualHosts(hostNames);
+		}
         contexts.put(contextPath, webapp);
        
         int sum = contexts.size();
@@ -103,6 +95,14 @@ public class EmbedJetty {
 			server.stop();
 		} catch (Exception e) {
 			throw new RuntimeException("jetty server stop error");
+		}
+	}
+	
+	public void jion() {
+		try {
+			server.join();
+		} catch (InterruptedException e) {
+			throw new RuntimeException("jetty server jion error");
 		}
 	}
 }
