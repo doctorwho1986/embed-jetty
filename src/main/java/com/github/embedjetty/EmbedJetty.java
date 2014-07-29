@@ -1,15 +1,13 @@
 package com.github.embedjetty;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +15,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -40,6 +39,25 @@ public class EmbedJetty {
 			projectDir = webAppParentPath;
 		}
         
+        addWebAppContext(contextPath, webAppRelativePath);
+//        WebAppContext webapp = new WebAppContext(projectDir + webAppRelativePath, contextPath);
+//        contexts.put(contextPath, webapp);
+//       
+//        int sum = contexts.size();
+//        Handler[] handlers = new WebAppContext[sum];
+//        Collection<WebAppContext> values = contexts.values();
+//        int i = 0;
+//        for (WebAppContext webAppContext : values) {
+//			handlers[i++] = webAppContext;
+//		}
+//        
+//        ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
+//        contextHandlerCollection.setHandlers(handlers );
+//		server.setHandler(contextHandlerCollection);
+	}
+	
+	public void addWebAppContext(String contextPath,String webAppRelativePath) {
+		 
         WebAppContext webapp = new WebAppContext(projectDir + webAppRelativePath, contextPath);
         contexts.put(contextPath, webapp);
        
@@ -61,7 +79,15 @@ public class EmbedJetty {
 			throw new IllegalArgumentException(contextPath + " is not exist");
 		}
 		
-		contexts.get(contextPath).addServlet(new ServletHolder(servlet), urlPattern);;
+		contexts.get(contextPath).addServlet(new ServletHolder(servlet), urlPattern);
+	}
+	
+	public void addFilter(String contextPath,String urlPattern,Filter filter,DispatcherType... dispatcherType) {
+		EnumSet<DispatcherType> dispatcherTypes = EnumSet.noneOf(DispatcherType.class);
+		for (DispatcherType t : dispatcherType) {
+			dispatcherTypes.add(t);
+		}
+		contexts.get(contextPath).addFilter(new FilterHolder(filter), urlPattern, dispatcherTypes);
 	}
 	
 	public void start() {
