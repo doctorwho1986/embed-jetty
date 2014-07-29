@@ -3,6 +3,6 @@
   <head><title>Current Date</title></head>
   <body>
     <p><%= new Date() %></p>
-    <p>hello embed tomcat </p>
+    <p>hello embed tomcat webapp</p>
   </body>
 </html>
