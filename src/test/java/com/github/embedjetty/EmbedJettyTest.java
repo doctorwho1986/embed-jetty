@@ -215,6 +215,8 @@ public class EmbedJettyTest {
 			}
 		}, DispatcherType.REQUEST);
 		
+		//TODO: ××××××××××这里需要手动增加host配置，注意
+		
 		jetty.addWebAppContext(contextPath2, webAppRelativePath2,"www.aicai.com");
 		jetty.addFilter(contextPath2, "/f2", new Filter() {
 			
